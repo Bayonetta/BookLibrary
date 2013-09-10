@@ -1,0 +1,13 @@
+<!doctype html>
+<title> {% block title %} 图书管理系统 {% endblock %} </title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<div class=page>
+  <h1>图书管理系统</h1>
+  <div class=navigation>
+    管理员登录 | 读者登录
+  </div>
+  <div class=body>
+    {% block body %}{% endblock %}
+   </div>
+</div>
+    
