@@ -1,14 +1,14 @@
-<!doctype html>
-<title>BookLibrary</title>
-<link rel=stylesheet type = text/css href="{{url_for('static', filename = 'style.css')}}">
-<div class=page>
-  <h1>BookLibrary</h1>
-  <div class=login_form>
-    <form action="{{ url_for('login') }}" method=post>
-      <dl>
-	<dd>Username: <input type=text name=username>
-	<dd>Password:  <input type=password name=password>
-	<dd>                  <input type=submit name=login>
-      </dl>
-    </form>
-
+{% extends "layout.html" %}
+{% block title%} 登录 {% endblock%}
+{% block body %}
+	<h2> 登录 </h2>
+	<form action="" method=post>
+	  <dl>
+	    <dt>用户名:
+	      <dd><input type=text name=username size=30 >
+		<dt>密码:
+		  <dd><input type=password name=password size=30>
+	  </dl>
+	  <div class=actions><input type=submit value="确定"></div>
+	</form>
+{% endblock %}
