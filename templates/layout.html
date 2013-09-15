@@ -4,8 +4,7 @@
 <div class=page>
   <h1>图书管理系统</h1>
   <div class=navigation>
-    <a href="{{ url_for('manager_login')}}">管理员登录 </a>|
-    <a href="{{ url_for('reader_login')}}">读者登录 </a>
+    {% block link %}{% endblock %}
   </div>
   <div class=body>
     {% block body %}{% endblock %}

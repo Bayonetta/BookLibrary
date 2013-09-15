@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block title%} 读者登录 {% endblock%}
+{% block link%}
+	<a href="{{ url_for('index')}}"> 返回   </a>|
+	<a href="{{ url_for('register')}}"> 注册 </a>
+{% endblock%}
+{% block body %}
+	<h2> 读者登录 </h2>
+	<form action="" method=post>
+	  <dl>
+	    <dt>用户名:
+	      <dd><input type=text name=username size=30 >
+		<dt>密码:
+		  <dd><input type=password name=password size=30>
+	  </dl>
+	  <div class=actions>
+	    <input type=submit value="登录">
+	  </div>
+	</form>
+{% endblock %}
