@@ -50,6 +50,13 @@ def get_user_id(username):
                   [username], one=True)
     return rv[0] if rv else None
 
+
+@app.before_request
+def before_request():
+	g.user = None
+	if 'user_id' in session:
+		g.user = session['user_id']
+
 @app.route('/')
 def index():
         return render_template('index.html')
@@ -63,6 +70,7 @@ def manager_login():
 		elif request.form['password'] != app.config['MANAGER_PWD']:
 			error = 'Invalid password'
 		else:
+			session['user_id'] = app.config['MANAGER_NAME']
 			return redirect(url_for('manager'))
 	return render_template('manager_login.html', error = error)
 
@@ -78,6 +86,9 @@ def reader_login():
 		elif not check_password_hash(user['pwd'], request.form['password']):
 			error = 'Invalid password'
 		else:
+			session['user_id'] = user['username']
+			print user['username']
+			print session['user_id']
 			return redirect(url_for('manager'))
 	return render_template('reader_login.html', error = error)
 
@@ -90,9 +101,7 @@ def register():
 			error = 'You have to enter a username'
 		elif not request.form['password']:
 			error = 'You have to enter a password'
-		elif not request.form['password'] != request.form['password2']:
-			print( request.form['password'])
-			print(request.form['password2'])
+		elif request.form['password'] != request.form['password2']:
 			error = 'The two passwords do not match'
 		elif get_user_id(request.form['username']) is not None:
 			error = 'The username is already taken'
@@ -105,6 +114,10 @@ def register():
 			return redirect(url_for('reader_login'))
 	return render_template('register.html', error = error)
 
+@app.route('/logout')
+def logout():
+	session.pop('user_id', None)
+	return redirect(url_for('index'))
 
 @app.route('/manager')
 def manager():
