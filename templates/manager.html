@@ -5,4 +5,15 @@
 {%  endblock%}
 {% block body%}
 	<h2> 图书管理 </h2>
+	<div>
+	  <a href="{{ url_for('manager_add') }}"> 添加 </a> |
+	  <a href="{{ url_for('manager_add') }}"> 删除 </a> |
+	  <a href="{{ url_for('manager_add') }}"> 修改 </a> 
+	</div>
+	{% for book in books%}
+	<li> {{book.book_id}}    {{book.bookname}}    {{book.author}}    {{book.publish_com}}    {{book.publish_date}} </li>
+	{% else %}
+	<li> <em> 还没有书籍 </em> </li>
+	{% endfor %}
+	</ul>
 {% endblock%}

@@ -46,7 +46,7 @@ def query_db(query, args=(), one=False):
 
 
 def get_user_id(username):
-    rv = query_db('select user_id from user where username = ?',
+    rv = query_db('select user_id from user where user_name = ?',
                   [username], one=True)
     return rv[0] if rv else None
 
@@ -79,16 +79,14 @@ def manager_login():
 def reader_login(): 
 	error = None
 	if request.method == 'POST':
-		user = query_db('''select * from user where username = ?''',
+		user = query_db('''select * from user where user_name = ?''',
 				[request.form['username']], one=True)
 		if user is None:
 			error = 'Invalid username'
 		elif not check_password_hash(user['pwd'], request.form['password']):
 			error = 'Invalid password'
 		else:
-			session['user_id'] = user['username']
-			print user['username']
-			print session['user_id']
+			session['user_id'] = user['user_name']
 			return redirect(url_for('manager'))
 	return render_template('reader_login.html', error = error)
 
@@ -107,7 +105,7 @@ def register():
 			error = 'The username is already taken'
 		else:
 			db = get_db()
-			db.execute('''insert into user (username, pwd) values (?, ?) ''',
+			db.execute('''insert into user (user_name, pwd) values (?, ?) ''',
 				   [request.form['username'], generate_password_hash(
 				request.form['password'])])
 			db.commit()
@@ -119,10 +117,21 @@ def logout():
 	session.pop('user_id', None)
 	return redirect(url_for('index'))
 
-@app.route('/manager')
+@app.route('/manager/index')
 def manager():
-	return render_template('manager.html')
+	return render_template('manager.html', books = query_db('''
+		select * from book''', []))
 
+
+@app.route('manager/add', methods=['GET', 'POST'])
+def manager_add():
+	error = None
+	if request.method == 'POST':
+		if not request.form['id']:
+			error = 'You have to input the book ISBN'
+		elif not request.form['name']:
+			error = 'You have to input the book name'
+	return render_template('manager_add.html', error)
 
 if __name__ == '__main__':
 	init_db()
