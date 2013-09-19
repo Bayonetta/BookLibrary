@@ -166,11 +166,12 @@ def manager_delete():
 	return render_template('manager_delete.html', error = error)
 
 
-@app.route('/manager/modify', methods=['GET', 'POST'])
+"""@app.route('/manager/modify', methods=['GET', 'POST'])
 def manager_modify():
 	errror = None
 	if request.method == 'POST':
-		if not request.form['']
+		
+"""			
 
 
 if __name__ == '__main__':
