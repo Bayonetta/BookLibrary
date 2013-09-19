@@ -2,8 +2,8 @@
 {% block title %} 注册 {% endblock %}
 {% block link %} 
 	<a href="{{ url_for('reader_login')}}"> 返回 </a>
-{% endblock%}
-{% block body%}
+{% endblock %}
+{% block body %}
 	{% if error %}
 	<div class=error>
 	  <strong>Errror : </strong> {{error}}

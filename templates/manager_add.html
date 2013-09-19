@@ -1,15 +1,15 @@
-{% extends 'layout.html' %}
-{% block title%} 增添书目 { % endblock%}
-{% block link%} 
-	<a href="{{ url_for(manager)}}"> 返回 </a>
-{% endblock%}
+{% extends "layout.html" %}
+{% block title %} 增添书目 {% endblock %}
+{% block link %} 
+	<a href="{{ url_for('manager')}}"> 返回 </a>
+{% endblock %}
 {% block body %}
 	<h2> 增添书目 </h2>
 	{% if error %}
 	<div class = error>
 	  <strong>Error : </strong> {{error}}
 	</div>
-	{% endif%}
+	{% endif %}
 	<form action="" method=post>
 	  <dl>
 	    <dt>ISBN: </dt>
@@ -27,4 +27,5 @@
 	    <input type=submit value="添加">
 	  </div>
 	</form>
-{% endblock %}
+
+{% endblock %} 

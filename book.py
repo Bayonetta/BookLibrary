@@ -79,7 +79,7 @@ def manager_login():
 def reader_login(): 
 	error = None
 	if request.method == 'POST':
-		user = query_db('''select * from user where user_name = ?''',
+		user = query_db('''select * from users where user_name = ?''',
 				[request.form['username']], one=True)
 		if user is None:
 			error = 'Invalid username'
@@ -105,7 +105,7 @@ def register():
 			error = 'The username is already taken'
 		else:
 			db = get_db()
-			db.execute('''insert into user (user_name, pwd) values (?, ?) ''',
+			db.execute('''insert into users (user_name, pwd) values (?, ?) ''',
 				   [request.form['username'], generate_password_hash(
 				request.form['password'])])
 			db.commit()
@@ -120,10 +120,10 @@ def logout():
 @app.route('/manager/index')
 def manager():
 	return render_template('manager.html', books = query_db('''
-		select * from book''', []))
+		select * from books''', []))
 
 
-@app.route('manager/add', methods=['GET', 'POST'])
+@app.route('/manager/add', methods=['GET', 'POST'])
 def manager_add():
 	error = None
 	if request.method == 'POST':
@@ -131,7 +131,47 @@ def manager_add():
 			error = 'You have to input the book ISBN'
 		elif not request.form['name']:
 			error = 'You have to input the book name'
-	return render_template('manager_add.html', error)
+		elif not request.form['author']:
+			error = 'You have to input the book author'
+		elif not request.form['company']:
+			error = 'You have to input the publish company'
+		elif not request.form['date']:
+			error = 'You have to input the publish date'
+		else:
+			db = get_db()
+			db.execute('''insert into books (book_id, book_name, author, publish_com,
+				publish_date) values (?, ?, ?, ?, ?) ''', [request.form['id'],
+			        request.form['name'], request.form['author'], request.form['company'],
+				request.form['date']])
+			db.commit()
+			return redirect(url_for('manager'))
+	return render_template('manager_add.html', error = error)
+
+@app.route('/manager/delete', methods=['GET', 'POST'])
+def manager_delete():
+	error = None
+	if request.method == 'POST':
+		if not request.form['name']:
+			error = 'You have to input the book name'
+		else:
+			book = query_db('''select * from books where book_name = ?''',
+				[request.form['name']], one=True)
+			if book is None:
+				error = 'Invalid book name'
+			else:
+				db = get_db()
+				db.execute('''delete from books where book_name=? ''', [request.form['name']])
+				db.commit()
+				return redirect(url_for('manager'))
+	return render_template('manager_delete.html', error = error)
+
+
+@app.route('/manager/modify', methods=['GET', 'POST'])
+def manager_modify():
+	errror = None
+	if request.method == 'POST':
+		if not request.form['']
+
 
 if __name__ == '__main__':
 	init_db()
