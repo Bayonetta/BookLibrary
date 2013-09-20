@@ -117,7 +117,7 @@ def logout():
 	session.pop('user_id', None)
 	return redirect(url_for('index'))
 
-@app.route('/manager/index')
+@app.route('/manager')
 def manager():
 	return render_template('manager.html', books = query_db('''
 		select * from books''', []))
@@ -163,15 +163,35 @@ def manager_delete():
 				db.execute('''delete from books where book_name=? ''', [request.form['name']])
 				db.commit()
 				return redirect(url_for('manager'))
-	return render_template('manager_delete.html', error = error)
+	return render_template('manager_delete.html', error = error)			
+
+@app.route('/book/<id>', methods=['GET', 'POST'])
+def book_index(id):
+	book = query_db('''select * from books where book_id = ?''', [id], one=True)
+       	return render_template('manager_book.html', book = book)
 
 
-"""@app.route('/manager/modify', methods=['GET', 'POST'])
-def manager_modify():
-	errror = None
+@app.route('/manager/modify/<id>', methods=['GET', 'POST'])
+def manager_modify(id):
+	error = None
+	book = query_db('''select * from books where book_id = ?''', [id], one=True)
 	if request.method == 'POST':
-		
-"""			
+		if not request.form['id']:
+			error = 'You have to input the book ISBN'
+		elif not request.form['name']:
+			error = 'You have to input the book name'
+		elif not request.form['author']:
+			error = 'You have to input the book author'
+		elif not request.form['company']:
+			error = 'You have to input the publish company'
+		elif not request.form['date']:
+			error = 'You have to input the publish date'
+		else:
+			db = get_db()
+			db.execute('''update books set book_name=? author=? publish_com=? publish_date=? where book_id=? ''', [id, request.form['name'], request.form['author'], request.form['company'], request.form['date']])
+			db.commit()
+			return redirect(url_for('book_index', id = id))
+	return render_template('manager_modify.html', book = book, error = error)
 
 
 if __name__ == '__main__':

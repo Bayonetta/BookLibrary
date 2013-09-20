@@ -1,14 +1,12 @@
 {% extends 'layout.html' %}
 {% block title%} 图书管理 {% endblock %}
 {% block link%} 
-	<a href="{{ url_for('logout')}}"> 注销 [{{ g.user}}]</a> 
+	<a href="{{ url_for('logout')}}"> 注销 [{{ g.user}}]</a> | 
+	<a href="{{ url_for('manager_add') }}"> 添加 </a> |
+	<a href="{{ url_for('manager_delete') }}"> 删除 </a>   
 {%  endblock%}
 {% block body%}
 	<h2> 图书管理 </h2>
-	<div>
-	  <a href="{{ url_for('manager_add') }}"> 添加 </a> |
-	  <a href="{{ url_for('manager_delete') }}"> 删除 </a>  
-	</div>
 	<table width="600" border="1">
 	  <tr>
 	    <th align="center"> ISBN </th>
@@ -25,7 +23,7 @@
 	    <th align="center"> {{book.author}}</th>
 	    <th align="centet"> {{book.publish_com}} </th>
 	    <th align="center"> {{book.publish_date}}</th>
-	    <th align="center"> <a href="{{ url_for('manager_add')}}"> 点击进入 </a> </th>
+	    <th align="center"> <a href="{{ url_for('book_index', id=book.book_id)}}"> 点击进入 </a> </th>
 	  </tr>
 	  {% endfor %}
 	</table>

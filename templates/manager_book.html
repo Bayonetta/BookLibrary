@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block title %} 图书主页 {% endblock %}
+
+{% block link %}
+	<a href="{{ url_for('manager') }}"> 返回  </a> | 
+	{% if book %}
+	<a href="{{ url_for('manager_modify', id=book.book_id)}}"> 修改 </a>
+	{% endif%}
+{% endblock %}
+{% block body  %}
+	<h2> 图书信息 </h2>
+	{% if book %}
+	<li> ISBN            	{{book.book_id}} </li>
+	<li> 书名        		{{book.book_name}} </li>
+	<li> 作者        		{{book.author}} </li>	
+	<li> 出版社     	{{book.publish_com}} </li>
+	<li> 出版日期   	{{book.publish_date}} </li>
+	{% endif %}
+
+{% endblock %}

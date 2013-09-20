@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %} 修改书目 {% endblock %}
+{% block link %} 
+	{% if book %}
+	<a href="{{ url_for('book_index', id=book.book_id)}}"> 返回 </a>
+	{% endif %}
+{% endblock %}
+{% block body %}
+	<h2> 修改书目 </h2>
+	{% if error %}
+	<div class = error>
+	  <strong>Error : </strong> {{error}}
+	</div>
+	{% endif %}
+	{% if book %}
+	<form action="" method=post>
+	  <dl>
+	    <dt>书名:</dt>
+	    <dd><input type=text name=name size=30 value={{book.book_name}}> </dd>
+	    <dt>作者:</dt>
+	    <dd><input type=text name=author size=30 value={{book.author}}> </dd>
+	    <dt>出版社:</dt>
+	    <dd><input type=text name=company size=30 value={{book.publish_com}}> </dd>
+	    <dt>出版日期:</dt>
+	    <dd><input type=text name=date size=30 value={{book.publish_date}}> </dd>
+	  </dl>
+	  <div class=actions>
+	    <input type=submit value="修改">
+	  </div>
+	</form>
+	{% endif %}
+{% endblock %} 
