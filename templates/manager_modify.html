@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
-{% block title %} 修改书目 {% endblock %}
+{% block title %} 修改书目信息 {% endblock %}
 {% block link %} 
 	{% if book %}
 	<a href="{{ url_for('book_index', id=book.book_id)}}"> 返回 </a>
 	{% endif %}
 {% endblock %}
 {% block body %}
-	<h2> 修改书目 </h2>
+	<h2> 修改书目信息 </h2>
 	{% if error %}
 	<div class = error>
 	  <strong>Error : </strong> {{error}}

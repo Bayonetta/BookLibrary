@@ -1,0 +1,16 @@
+{% extends "layout" %}
+{% block title%} 查询  {% endblock %}
+{% block link %} 
+	<a href="{{ url_for('logout') }}"> 注销[{{g.user}}] </a>
+{% block body %}
+	<h2> 查询 </h2> 
+	<div>
+	  <form action="" method=post>
+	    <dd> <input type=text name=query size=100> </dd> 
+	  </form>
+	</div>	
+	<div class=actions>
+	  <input type=submit value="查询">
+	</div>
+{% endblock %}
+

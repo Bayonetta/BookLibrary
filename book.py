@@ -46,7 +46,7 @@ def query_db(query, args=(), one=False):
 
 
 def get_user_id(username):
-    rv = query_db('select user_id from user where user_name = ?',
+    rv = query_db('select user_id from users where user_name = ?',
                   [username], one=True)
     return rv[0] if rv else None
 
@@ -151,16 +151,16 @@ def manager_add():
 def manager_delete():
 	error = None
 	if request.method == 'POST':
-		if not request.form['name']:
+		if not request.form['id']:
 			error = 'You have to input the book name'
 		else:
-			book = query_db('''select * from books where book_name = ?''',
-				[request.form['name']], one=True)
+			book = query_db('''select * from books where book_id = ?''',
+				[request.form['id']], one=True)
 			if book is None:
-				error = 'Invalid book name'
+				error = 'Invalid book id'
 			else:
 				db = get_db()
-				db.execute('''delete from books where book_name=? ''', [request.form['name']])
+				db.execute('''delete from books where book_id=? ''', [request.form['id']])
 				db.commit()
 				return redirect(url_for('manager'))
 	return render_template('manager_delete.html', error = error)			
@@ -176,9 +176,7 @@ def manager_modify(id):
 	error = None
 	book = query_db('''select * from books where book_id = ?''', [id], one=True)
 	if request.method == 'POST':
-		if not request.form['id']:
-			error = 'You have to input the book ISBN'
-		elif not request.form['name']:
+		if not request.form['name']:
 			error = 'You have to input the book name'
 		elif not request.form['author']:
 			error = 'You have to input the book author'
@@ -188,7 +186,7 @@ def manager_modify(id):
 			error = 'You have to input the publish date'
 		else:
 			db = get_db()
-			db.execute('''update books set book_name=? author=? publish_com=? publish_date=? where book_id=? ''', [id, request.form['name'], request.form['author'], request.form['company'], request.form['date']])
+			db.execute('''update books set book_name=?, author=?, publish_com=?, publish_date=? where book_id=? ''', [request.form['name'], request.form['author'], request.form['company'], request.form['date'], id])
 			db.commit()
 			return redirect(url_for('book_index', id = id))
 	return render_template('manager_modify.html', book = book, error = error)
