@@ -87,7 +87,7 @@ def reader_login():
 			error = 'Invalid password'
 		else:
 			session['user_id'] = user['user_name']
-			return redirect(url_for('manager'))
+			return redirect(url_for('reader'))
 	return render_template('reader_login.html', error = error)
 
 
@@ -191,6 +191,24 @@ def manager_modify(id):
 			return redirect(url_for('book_index', id = id))
 	return render_template('manager_modify.html', book = book, error = error)
 
+@app.route('/reader', methods=['GET', 'POST'])
+def reader():
+	error = None
+	books = None
+	if request.method == 'POST':
+		if request.form['item'] == 'name':
+			if not request.form['query']:
+				error = 'You have to input the book name'
+			else:
+				books = query_db('''select * from books where book_name = ?''',
+						[request.form['query']], one=True)
+		else:
+			if not request.form['query']:
+				error = 'You have to input the book author'
+			else:
+				books = query_db('''select * from books where author = ?''',
+						[request.form['query']], one=True)
+	return render_template('reader.html', books = books, error = error)
 
 if __name__ == '__main__':
 	init_db()
