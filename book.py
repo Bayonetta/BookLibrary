@@ -8,7 +8,7 @@ from werkzeug import check_password_hash, generate_password_hash
 
 
 #CONFIGURATION
-DATABASE = '/home/bayonetta/MyFlask/BookLibrary/book.db'
+DATABASE = '~/MyFlask/BookLibrary/book.db'
 DEBUG = True
 SECRET_KEY = 'development key'
 MANAGER_NAME = 'admin'
