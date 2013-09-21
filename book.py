@@ -165,8 +165,8 @@ def manager_delete():
 				return redirect(url_for('manager'))
 	return render_template('manager_delete.html', error = error)			
 
-@app.route('/book/<id>', methods=['GET', 'POST'])
-def book_index(id):
+@app.route('/manager/book/<id>', methods=['GET', 'POST'])
+def manager_book(id):
 	book = query_db('''select * from books where book_id = ?''', [id], one=True)
        	return render_template('manager_book.html', book = book)
 
@@ -201,14 +201,24 @@ def reader():
 				error = 'You have to input the book name'
 			else:
 				books = query_db('''select * from books where book_name = ?''',
-						[request.form['query']], one=True)
+						[request.form['query']])
+				print books
+				if not books:
+					error = 'Invalid book name'
 		else:
 			if not request.form['query']:
 				error = 'You have to input the book author'
 			else:
 				books = query_db('''select * from books where author = ?''',
-						[request.form['query']], one=True)
+						[request.form['query']])
+				if not books:
+					error = 'Invalid book author'
 	return render_template('reader.html', books = books, error = error)
+
+# @app.route('reader/book/<id>', methods=['GET', 'POST'])
+# def reader_index(id):
+# 	book = query_db('''select * from books where book_id = ?''', [id], one=True)
+#        	return render_template('reader_book.html', book = book)
 
 if __name__ == '__main__':
 	init_db()

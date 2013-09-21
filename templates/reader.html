@@ -32,14 +32,14 @@
 	    <th align="center"> 出版时间 </th>	
 	    <th align="center"> 查看信息 </th>
 	  </tr>
-	  {% for book in books%}
+	  {% for book in books %}
 	  <tr>
 	    <th align="center"> {{book.book_id}}</th>
 	    <th align="center"> {{book.book_name}} </th>
 	    <th align="center"> {{book.author}}</th>
 	    <th align="centet"> {{book.publish_com}} </th>
 	    <th align="center"> {{book.publish_date}}</th>
-	    <th align="center"> <a href="{{ url_for('book_index', id=book.book_id)}}"> 点击进入 </a> </th>
+	    <th align="center"> <a href="{{ url_for('manager_book', id=book.book_id)}}"> 点击进入 </a> </th>
 	  </tr>
 	  {% endfor %}
 	  {% endif %}
