@@ -8,7 +8,7 @@ from werkzeug import check_password_hash, generate_password_hash
 
 
 #CONFIGURATION
-DATABASE = '~/MyFlask/BookLibrary/book.db'
+DATABASE = 'book.db'
 DEBUG = True
 SECRET_KEY = 'development key'
 MANAGER_NAME = 'admin'
