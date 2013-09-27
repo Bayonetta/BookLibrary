@@ -11,10 +11,14 @@
 	  <strong>Errror : </strong> {{error}}
 	</div>
 	{% endif %}  
-	<form action="" method=post>
-	  <dl>
-	    <dt>请输入书目ISBN:</dt>
-	    <dd><input type=text name=id size=30> </dd>	
-    <div class=actions><input type=submit value="删除"></div>
-  </form>
+	<div class=actions>
+		<form action="" method=post>
+	    	<select name="book">
+	    		<option value="name">书名</option>
+				<option value="isbn">ISBN</option>
+	    	</select>
+	    	<input type="text" name="find" size="80"> 
+		    <input type="submit" value="删除" />
+	    </form>
+    </div>
 {% endblock %}

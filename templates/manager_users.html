@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+{% block title%} 用户管理 {% endblock %}
+{% block link%} 
+	<a href="{{ url_for('logout')}}"> 注销 [{{ g.user}}]</a> | 
+	<!-- <a href="{{ url_for('manager_delete') }}"> 删除 </a> -->
+{%  endblock%}
+{% block body%}
+	<h2> 用户管理 </h2>
+	<table width="600" border="1", align="center">
+	  <tr>
+	    <th align="center"> 用户名 </th>
+	    <th align="center"> 用户信息 </th>
+	  </tr>
+	  {% for user in users%}
+	  <tr>
+	    <th align="center"> {{user.user_name}}</th>
+	    <th align="center"> <a href="{{ url_for('manager_user', id=user.user_name)}}"> 点击进入 </a> </th>
+	  </tr>
+	  {% endfor %}
+	</table>
+{% endblock%}

@@ -14,4 +14,5 @@ BookLibrary
  * 在虚拟机开启情况下，输入python book.py，然后在浏览器中打开127.0.0.1:5000即可访问
 
 ## 导入数据
+   在项目根目录 输入sqlite3 book.db
  * 进入sqlite3 shell，输入.separator "," 后，再输入 .import books.txt books 
