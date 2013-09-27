@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% block title%} 页面导航 {% endblock %}
+{% block link%} 
+	<a href="{{ url_for('logout')}}"> 注销 [{{ g.user}}]</a> | 
+	<a href="{{ url_for('manager_add') }}"> 添加 </a> |
+	<a href="{{ url_for('manager_delete') }}"> 删除 </a> |
+{%  endblock%}
+{% block body%}
+	<a href="{{ url_for('manager') }}" style="text-decoration:none"> 图书管理 </a>
+	<br/>
+	<br/>
+	<a href="{{ url_for('manager_users') }}" style="text-decoration:none"> 用户管理 </a>
+{% endblock%}

@@ -1,5 +1,4 @@
-drop table if exists users;
-create table users (
+create table if not exists users (
         user_id integer primary key autoincrement,
 	user_name text not null,
 	pwd text not null

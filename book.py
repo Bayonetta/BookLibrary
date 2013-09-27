@@ -15,6 +15,7 @@ MANAGER_NAME = 'admin'
 MANAGER_PWD = '123456'
 
 app = Flask(__name__)
+
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
@@ -71,7 +72,7 @@ def manager_login():
 			error = 'Invalid password'
 		else:
 			session['user_id'] = app.config['MANAGER_NAME']
-			return redirect(url_for('manager'))
+			return redirect(url_for('manager2'))
 	return render_template('manager_login.html', error = error)
 
 
@@ -122,6 +123,15 @@ def manager():
 	return render_template('manager.html', books = query_db('''
 		select * from books''', []))
 
+@app.route('/manager2')
+def manager2():
+	return render_template('manager2.html')
+
+@app.route('/manager/users')
+def manager_users():
+	users = query_db('''select * from users''', [])
+	return render_template('manager_users.html', users = users)
+	# check_password_hash(user['pwd'], request.form['password'])
 
 @app.route('/manager/add', methods=['GET', 'POST'])
 def manager_add():
@@ -163,12 +173,17 @@ def manager_delete():
 				db.execute('''delete from books where book_id=? ''', [request.form['id']])
 				db.commit()
 				return redirect(url_for('manager'))
-	return render_template('manager_delete.html', error = error)			
+	return render_template('manager_delete.html', error = error)		
 
 @app.route('/manager/book/<id>', methods=['GET', 'POST'])
 def manager_book(id):
 	book = query_db('''select * from books where book_id = ?''', [id], one=True)
        	return render_template('manager_book.html', book = book)
+
+@app.route('/manager/user/<id>', methods=['GET', 'POST'])
+def manager_user(id):
+	user = query_db('''select * from users where user_name = ?''', [id], one=True)
+    	return render_template('manager_userinfo.html', user = user)
 
 
 @app.route('/manager/modify/<id>', methods=['GET', 'POST'])
@@ -222,7 +237,7 @@ def reader():
 
 if __name__ == '__main__':
 	init_db()
-	app.run()
+	app.run(debug=True)
 
 
 

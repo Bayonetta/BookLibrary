@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% block title %} 用户主页 {% endblock %}
+
+{% block link %}
+	<a href="{{ url_for('manager_users') }}"> 返回  </a> | 
+{% endblock %}
+{% block body  %}
+	<h2> 用户信息 </h2>
+	{% if user %}
+	<li> 用户名            	{{user.user_name}} </li>
+	<li> 用户信息        		 </li>
+	{% endif %}
+{% endblock %}
