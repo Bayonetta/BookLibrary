@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block title %} 阅读记录 {% endblock %}
+{% block link %} 
+	<a href="{{ url_for('reader')}}"> 返回 </a>
+{% endblock %}
+{% block body %}
+	<table width="600" border="1" align="center">
+	  <tr>
+	    <th align="center"> 书名 </th>
+	    <th align="center"> 借书日期 </th>	
+	    <th align="center"> 还书日期 </th>
+	    <th align="center"> 状态 </th>
+	  </tr>
+	  {% for histroy in histroys %}
+	  <tr>
+	    <th align="center"> {{histroy.book_name}} </th>
+	    <th align="center"> {{histroy.date_borrow}}</th>
+	    <th align="center"> {{histroy.date_return}} </th> 
+	    <th align="center"> {{histroy.status}} </th>
+	  </tr>
+	  {% endfor %}
+	</table>	
+
+{% endblock %}

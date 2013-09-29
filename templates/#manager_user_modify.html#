@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %} 用户信息修改 {% endblock %}
+{% block link %} 
+	<a href="{{url_for('manager_userinfo', id = user.user_id)}}"> 返回 </a>
+{% endblock %}
+{% block body %}
+	{% if error %}
+	<div class=error>
+	  <strong>Errror : </strong> {{error}}
+	</div>
+	{% endif %}  
+	<form action="" method=post>
+	  <dl>
+	    <dt>用户名:</dt>
+	    <dd><input type=text name=username size=30 value={{user.user_name}}> </dd>	
+	    <dt>请输入新密码(不输入就是不修改):</dt>
+	    <dd><input type=password name=password size=30> </dd>
+	    <dt>学院:</dt>
+	    <dd><input type=text name=college size=30 value={{user.college}}> </dd>
+	    <dt>学号:</dt>
+	    <dd><input type=text name=number size=30 value={{user.num}}> </dd>
+	    <dt>邮箱:</dt>
+	    <dd><input type=text name=email size=30 value={{user.email}}> </dd>
+	  </dl>
+	  <div class=actions><input type=submit value="确定"></div>
+	</form>
+
+{% endblock %}

@@ -1,10 +1,9 @@
 {% extends "layout.html" %}
-{% block title %} 用户主页 {% endblock %}
+{% block title %} 个人主页 {% endblock %}
 
 {% block link %}
-	<a href="{{ url_for('manager_users') }}"> 返回  </a>  |
-	<a href="{{ url_for('manger_user_modify', id=user.user_id)}}"> 修改 </a> | 
-	<a href="{{ url_for('manger_user_delete', id=user.user_id)}}"> 注销 </a>
+	<a href="{{ url_for('reader') }}"> 返回  </a>  |
+	<a href="{{ url_for('reader_modify')}}"> 修改 </a>
 {% endblock %}
 {% block body  %}
 	<h2> 用户信息 </h2>

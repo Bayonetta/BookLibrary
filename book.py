@@ -5,7 +5,7 @@ from datetime import datetime
 from flask import Flask, request, session, url_for, redirect, \
      render_template, abort, g, flash, _app_ctx_stack
 from werkzeug import check_password_hash, generate_password_hash
-
+import time
 
 #CONFIGURATION
 DATABASE = 'book.db'
@@ -72,7 +72,7 @@ def manager_login():
 			error = 'Invalid password'
 		else:
 			session['user_id'] = app.config['MANAGER_NAME']
-			return redirect(url_for('manager2'))
+			return redirect(url_for('manager'))
 	return render_template('manager_login.html', error = error)
 
 
@@ -106,9 +106,10 @@ def register():
 			error = 'The username is already taken'
 		else:
 			db = get_db()
-			db.execute('''insert into users (user_name, pwd) values (?, ?) ''',
-				   [request.form['username'], generate_password_hash(
-				request.form['password'])])
+			db.execute('''insert into users (user_name, pwd, college, num, email) \
+				values (?, ?, ?, ?, ?) ''', [request.form['username'], generate_password_hash(
+				request.form['password']), request.form['college'], request.form['number'],
+							     request.form['email']])
 			db.commit()
 			return redirect(url_for('reader_login'))
 	return render_template('register.html', error = error)
@@ -118,23 +119,60 @@ def logout():
 	session.pop('user_id', None)
 	return redirect(url_for('index'))
 
-@app.route('/manager')
-def manager():
-	return render_template('manager.html', books = query_db('''
+@app.route('/manager/books')
+def manager_books():
+	return render_template('manager_books.html', books = query_db('''
 		select * from books''', []))
 
-@app.route('/manager2')
-def manager2():
-	return render_template('manager2.html')
+@app.route('/manager')
+def manager():
+	return render_template('manager.html')
+
+@app.route('/reader')
+def reader():
+	return render_template('reader.html')
 
 @app.route('/manager/users')
 def manager_users():
 	users = query_db('''select * from users''', [])
 	return render_template('manager_users.html', users = users)
-	# check_password_hash(user['pwd'], request.form['password'])
 
-@app.route('/manager/add', methods=['GET', 'POST'])
-def manager_add():
+@app.route('/manager/user/modify/<id>', methods=['GET', 'POST'])
+def manger_user_modify(id):
+	error = None
+	user = query_db('''select * from users where user_id = ?''', [id], one=True)
+	if request.method == 'POST':
+		if not request.form['username']:
+			error = 'You have to input your name'
+		elif not request.form['password']:
+			db = get_db()
+			db.execute('''update users set user_name=?, college=?, num=? \
+				, email=? where user_id=? ''', [request.form['username'],
+				request.form['college'], request.form['number'],
+				request.form['email'], id])
+			db.commit()
+			return redirect(url_for('manager_user', id = id))
+		else:
+			db = get_db()
+			db.execute('''update users set user_name=?, pwd=?, college=?, num=? \
+				, email=? where user_id=? ''', [request.form['username'],
+			        generate_password_hash(request.form['password']),
+				request.form['college'], request.form['number'],
+				request.form['email'], id])
+			db.commit()
+			return redirect(url_for('manager_user', id = id))
+	return render_template('manager_user_modify.html', user=user, error = error)
+
+@app.route('/manager/user/deleter/<id>', methods=['GET', 'POST'])
+def manger_user_delete(id):
+	db = get_db()
+	db.execute('''delete from users where user_id=? ''', [id])
+	db.commit()
+	return redirect(url_for('manager_users'))
+	
+
+@app.route('/manager/books/add', methods=['GET', 'POST'])
+def manager_books_add():
 	error = None
 	if request.method == 'POST':
 		if not request.form['id']:
@@ -154,11 +192,11 @@ def manager_add():
 			        request.form['name'], request.form['author'], request.form['company'],
 				request.form['date']])
 			db.commit()
-			return redirect(url_for('manager'))
-	return render_template('manager_add.html', error = error)
+			return redirect(url_for('manager_books'))
+	return render_template('manager_books_add.html', error = error)
 
-@app.route('/manager/delete', methods=['GET', 'POST'])
-def manager_delete():
+@app.route('/manager/books/delete', methods=['GET', 'POST'])
+def manager_books_delete():
 	error = None
 	if request.method == 'POST':
 		if not request.form['id']:
@@ -172,18 +210,31 @@ def manager_delete():
 				db = get_db()
 				db.execute('''delete from books where book_id=? ''', [request.form['id']])
 				db.commit()
-				return redirect(url_for('manager'))
-	return render_template('manager_delete.html', error = error)		
+				return redirect(url_for('manager_books'))
+	return render_template('manager_books_delete.html', error = error)		
 
 @app.route('/manager/book/<id>', methods=['GET', 'POST'])
 def manager_book(id):
 	book = query_db('''select * from books where book_id = ?''', [id], one=True)
-       	return render_template('manager_book.html', book = book)
+	reader = query_db('''select * from borrows where book_id = ?''', [id], one=True)
+	name = query_db('''select user_name from borrows where book_id = ?''', [id], one=True)
+
+	current_time = time.strftime('%Y-%m-%d',time.localtime(time.time()))
+	if request.method == 'POST':
+		db = get_db()
+		db.execute('''update histroys set status = ?, date_return = ?  where book_id=?
+			and user_name=? and status=? ''',
+			   ['retruned', current_time, id, name[0], 'not return'])
+		db.execute('''delete from borrows where book_id = ? ''' , [id])
+		db.commit()
+		return redirect(url_for('manager_book', id = id))
+       	return render_template('manager_book.html', book = book, reader = reader)
 
 @app.route('/manager/user/<id>', methods=['GET', 'POST'])
 def manager_user(id):
-	user = query_db('''select * from users where user_name = ?''', [id], one=True)
-    	return render_template('manager_userinfo.html', user = user)
+	user = query_db('''select * from users where user_id = ?''', [id], one=True)
+	books = None
+    	return render_template('manager_userinfo.html', user = user, books = books)
 
 
 @app.route('/manager/modify/<id>', methods=['GET', 'POST'])
@@ -203,11 +254,46 @@ def manager_modify(id):
 			db = get_db()
 			db.execute('''update books set book_name=?, author=?, publish_com=?, publish_date=? where book_id=? ''', [request.form['name'], request.form['author'], request.form['company'], request.form['date'], id])
 			db.commit()
-			return redirect(url_for('book_index', id = id))
+			return redirect(url_for('manager_book', id = id))
 	return render_template('manager_modify.html', book = book, error = error)
 
-@app.route('/reader', methods=['GET', 'POST'])
-def reader():
+@app.route('/reader/info', methods=['GET', 'POST'])
+def reader_info():
+	user = query_db('''select * from users where user_name=? ''', [g.user], one = True)
+	return render_template('reader_info.html', user = user)
+	
+
+@app.route('/reader/modify', methods=['GET', 'POST'])
+def reader_modify():
+	error = None
+	user = query_db('''select * from users where user_name = ?''', [g.user], one=True)
+	id = user[0]
+	if request.method == 'POST':
+		if not request.form['username']:
+			error = 'You have to input your name'
+		elif not request.form['password']:
+			db = get_db()
+			db.execute('''update users set user_name=?, college=?, num=? \
+				, email=? where user_id=? ''', [request.form['username'],
+				request.form['college'], request.form['number'],
+				request.form['email'], id])
+			db.commit()
+			return redirect(url_for('reader_info'))
+		else:
+			db = get_db()
+			db.execute('''update users set user_name=?, pwd=?, college=?, num=? \
+				, email=? where user_id=? ''', [request.form['username'],
+			        generate_password_hash(request.form['password']),
+				request.form['college'], request.form['number'],
+				request.form['email'], id])
+			db.commit()
+			return redirect(url_for('reader_info'))
+	return render_template('reader_modify.html', user=user, error = error)
+
+
+
+@app.route('/reader/query', methods=['GET', 'POST'])
+def reader_query():
 	error = None
 	books = None
 	if request.method == 'POST':
@@ -217,7 +303,6 @@ def reader():
 			else:
 				books = query_db('''select * from books where book_name = ?''',
 						[request.form['query']])
-				print books
 				if not books:
 					error = 'Invalid book name'
 		else:
@@ -228,13 +313,41 @@ def reader():
 						[request.form['query']])
 				if not books:
 					error = 'Invalid book author'
-	return render_template('reader.html', books = books, error = error)
+	return render_template('reader_query.html', books = books, error = error)
 
 @app.route('/reader/book/<id>', methods=['GET', 'POST'])
 def reader_book(id):
+	error = None
 	book = query_db('''select * from books where book_id = ?''', [id], one=True)
-       	return render_template('reader_book.html', book = book)
+	reader = query_db('''select * from borrows where book_id = ?''', [id], one=True)
+	count  = query_db('''select count(book_id) from borrows where user_name = ? ''',
+			  [g.user], one = True)
 
+	current_time = time.strftime('%Y-%m-%d',time.localtime(time.time()))
+	return_time = time.strftime('%Y-%m-%d',time.localtime(time.time() + 2600000))
+	if request.method == 'POST':
+		if reader:
+			error = 'The book has already borrowed.'
+		else:
+			if count[0] == 3:
+				error = 'You can\'t borrow more than three books.'
+			else:
+				db = get_db()
+				db.execute('''insert into borrows (user_name, book_id, date_borrow, \
+					date_return) values (?, ?, ?, ?) ''', [g.user, id,
+									       current_time, return_time])
+				db.execute('''insert into histroys (user_name, book_id, date_borrow, \
+					status) values (?, ?, ?, ?) ''', [g.user, id,
+									       current_time, 'not return'])
+				db.commit()
+				return redirect(url_for('reader_book', id = id))
+       	return render_template('reader_book.html', book = book, reader = reader, error = error)
+
+@app.route('/reader/histroy', methods=['GET', 'POST'])
+def reader_histroy():
+	histroys = query_db('''select * from histroys, books where histroys.book_id = books.book_id and histroys.user_name=? ''', [g.user], one = False)
+	
+	return render_template('reader_histroy.html', histroys = histroys)
 
 if __name__ == '__main__':
 	init_db()

@@ -1,7 +1,9 @@
 {% extends 'layout.html' %}
-{% block title%} 功能导航 {% endblock %}
+{% block title%} 页面导航 {% endblock %}
 {% block link%} 
 	<a href="{{ url_for('logout')}}"> 注销 [{{ g.user}}]</a> | 
 	<a href="{{ url_for('manager_books') }}"> 图书管理 </a> |
 	<a href="{{ url_for('manager_users') }}"> 用户管理 </a> 
 {%  endblock%}
+{% block body%}
+{% endblock%}

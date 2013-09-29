@@ -1,48 +1,13 @@
-{% extends "layout.html" %}
-{% block title%} 查询  {% endblock %}
+{% extends 'layout.html' %}
+{% block title %} 欢迎使用 {% endblock %}
 {% block link %} 
-	<a href="{{ url_for('logout') }}"> 注销[{{g.user}}] </a>
-{% endblock %}
-{% block body %}
-	<h2> 查询 </h2> 
-	{% if error %}
-	<div class=error>
-	  <strong>Errror : </strong> {{error}}
-	</div>
-	{% endif %}  
-    <div class=actions>
-	  <form action="" method="post">
-	    <dd>
-	      <select name="item">
-		<option value="name"> 书名 </option>
-		<option value="author"> 作者 </option>
-	      </select>
-	      <input type="text" name="query" size="80"> 
-	      <input type="submit" value="查询">
-	    </dd> 
-	  </form>
-	</div>
-	{% if books %}
-	<table width="600" border="1" align="center">
-	  <tr>
-	    <th align="center"> ISBN </th>
-	    <th align="center"> 书名 </th>
-	    <th align="center"> 作者</th>
-	    <th align="centet"> 出版商 </th>
-	    <th align="center"> 出版时间 </th>	
-	    <th align="center"> 查看信息 </th>
-	  </tr>
-	  {% for book in books %}
-	  <tr>
-	    <th align="center"> {{book.book_id}}</th>
-	    <th align="center"> {{book.book_name}} </th>
-	    <th align="center"> {{book.author}}</th>
-	    <th align="centet"> {{book.publish_com}} </th>
-	    <th align="center"> {{book.publish_date}}</th>
-	    <th align="center"> <a href="{{ url_for('reader_book', id=book.book_id)}}"> 点击进入 </a> </th>
-	  </tr>
-	  {% endfor %}
-	  {% endif %}
-	</table>	
+	<a href="{{url_for('logout')}}"> 注销[{{g.user}}] </a> | 
+	<a href="{{url_for('reader_query')}}"> 查询 </a> | 
+	<a href="{{url_for('reader_info')}}"> 查看个人信息 </a> |
+	<a href="{{url_for('reader_histroy')}}"> 查看阅读记录 </a>
+
 {% endblock %}
 
+{% block body %}
+	<h2> 欢迎使用 </h2>
+{% endblock %}

@@ -2,7 +2,7 @@
 {% block title %} 图书主页 {% endblock %}
 
 {% block link %}
-	<a href="{{ url_for('manager') }}"> 返回  </a> | 
+	<a href="{{ url_for('manager_books') }}"> 返回  </a> | 
 	{% if book %}
 	<a href="{{ url_for('manager_modify', id=book.book_id)}}"> 修改 </a>
 	{% endif%}
@@ -16,5 +16,17 @@
 	<li> 出版社     	{{book.publish_com}} </li>
 	<li> 出版日期   	{{book.publish_date}} </li>
 	{% endif %}
-
+	<h2 > 借阅信息 </h2>
+	{% if reader  %}
+	<li> 借阅者姓名 {{reader.user_name}}</li>
+	<li> 借阅日期  {{reader.date_borrow}}</li>
+	<li> 还书日期  {{reader.date_return}}</li>
+	<form action="" method=post>
+	  <div class=actions>
+	    <input type=submit value="归还">
+	    </div>
+	</form>
+	{% else %}
+	<li> 无 </li> 
+	{% endif %}
 {% endblock %}
