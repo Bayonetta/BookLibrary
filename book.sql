@@ -7,7 +7,7 @@ create table if not exists users (
 	email text
 );
 
- create table if not exists  books(
+create table if not exists books(
        book_id text primary key,
        book_name text not null,
        author text not null,
@@ -15,8 +15,8 @@ create table if not exists users (
        publish_date text not null
 );
 
-drop table if exists borrows;
-create table  borrows(
+-- 借阅相关表不再在初始化时强制 drop，避免每次 init_db() 清空运行数据
+create table if not exists borrows(
        user_name text not null,
        book_id text not null,
        date_borrow text not null,
@@ -24,8 +24,7 @@ create table  borrows(
        primary key (user_name, book_id)
 );
 
-drop table if exists histroys;
-create table histroys(
+create table if not exists histroys(
        histroy_id integer primary key autoincrement,
        book_id text not null,
        user_name text not null,
