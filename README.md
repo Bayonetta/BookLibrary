@@ -1,4 +1,4 @@
-BookLibrary
+MiniLibrary
 ===========
 
 一个基于 Flask 的简单教学用图书管理系统（已更新到 Python 3）。
